@@ -1,5 +1,4 @@
 window.VM_CONFIG = {
-  // Paste the deployed Apps Script /exec URL here. Leave blank to use sample data.
-  apiUrl: "",
+  apiUrl: "https://script.google.com/macros/s/YOUR_DEPLOYMENT_ID/exec",
   pageSize: 12
 };
