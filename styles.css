@@ -7,3 +7,4 @@ html[data-theme=dark]{--bg:#080a0c;--surface:#101316;--surface2:#15181b;--text:#
 
 /* Pin icon */
 .pin-note{display:flex;align-items:center;gap:.4rem}.pin-note-icon{display:inline-flex;width:18px;height:18px}.pin-note-icon svg,.pin svg{display:block;width:100%;height:100%;stroke:currentColor;fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}.pin{font-size:0;width:36px;height:36px;padding:7px}.pin.active{color:var(--accent)}
+.view-tools .page-size{min-width:76px;width:76px}
