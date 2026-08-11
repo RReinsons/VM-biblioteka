@@ -26,7 +26,7 @@
   function buildFilters(){
     const previous={}; document.querySelectorAll("#filters select").forEach(s=>previous[s.dataset.key]=s.value);
     const defs=[["topic",t("filterTopic")],["language",t("filterLanguage")],["year",t("filterYear")]];
-    $("#filters").innerHTML=defs.map(([key,label])=>{const vals=[...new Set(state.books.map(b=>b[key]).filter(Boolean))].sort((a,b)=>String(a).localeCompare(String(b),"lv",{numeric:true}));return `<div class="filter"><label for="filter-${key}">${label}</label><select id="filter-${key}" data-key="${key}"><option value="">${t("all")}</option>${vals.map(v=>`<option>${esc(v)}</option>`).join("")}</select></div>`}).join("");
+    $("#filters").innerHTML=defs.map(([key,label])=>{const lastValue=key==="language"?"other":key==="topic"?"annet":"";const vals=[...new Set(state.books.map(b=>b[key]).filter(Boolean))].sort((a,b)=>{const aLast=String(a).trim().toLowerCase()===lastValue,bLast=String(b).trim().toLowerCase()===lastValue;if(aLast!==bLast)return aLast?1:-1;return String(a).localeCompare(String(b),"lv",{numeric:true})});return `<div class="filter"><label for="filter-${key}">${label}</label><select id="filter-${key}" data-key="${key}"><option value="">${t("all")}</option>${vals.map(v=>`<option>${esc(v)}</option>`).join("")}</select></div>`}).join("");
     document.querySelectorAll("#filters select").forEach(s=>{if(previous[s.dataset.key])s.value=previous[s.dataset.key]});
     $("#filters").onchange=()=>{state.page=1;apply()};
   }
