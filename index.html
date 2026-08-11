@@ -1,0 +1,60 @@
+<!doctype html>
+<html lang="lv" data-theme="light">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="description" content="Valodu Mājas valodu apguves un mācīšanas grāmatu katalogs">
+  <title>Valodu Mājas bibliotēka</title>
+  <link rel="icon" href="assets/logo.png">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <a class="skip-link" href="#catalog">Pāriet uz katalogu</a>
+  <header class="site-header">
+    <a class="brand" href="#" aria-label="Valodu Māja"><img src="assets/logo.png" alt="Valodu Māja"></a>
+    <nav aria-label="Galvenā navigācija"><a class="active" href="#catalog" data-i18n="books">Grāmatas</a><a href="#about" data-i18n="about">Par bibliotēku</a></nav>
+    <div class="header-tools">
+      <button id="fontDown" class="text-button" aria-label="Samazināt teksta izmēru">A−</button>
+      <button id="fontUp" class="text-button" aria-label="Palielināt teksta izmēru">A+</button>
+      <button id="themeToggle" class="icon-button" aria-label="Mainīt krāsu režīmu">☼</button>
+      <button id="langToggle" class="text-button" aria-label="Change language">LV / EN</button>
+    </div>
+  </header>
+
+  <main>
+    <section id="catalog" aria-labelledby="catalogTitle">
+      <h1 id="catalogTitle" class="sr-only">Grāmatu katalogs</h1>
+      <form id="searchForm" class="search-row" role="search">
+        <label class="sr-only" for="query">Meklēt katalogā</label>
+        <input id="query" type="search" autocomplete="off" placeholder="Meklēt pēc nosaukuma, autora, tēmas, atslēgvārda…">
+        <button class="primary" type="submit"><span aria-hidden="true">⌕</span> <span data-i18n="search">Meklēt</span></button>
+      </form>
+
+      <div id="filters" class="filters" aria-label="Kataloga filtri"></div>
+
+      <div class="catalog-toolbar">
+        <p class="pin-note"><span class="pin-note-icon" aria-hidden="true"></span> <span data-i18n="pinNote">Piespraustās grāmatas tiek rādītas vispirms.</span> <button id="clearPins" class="link-button" data-i18n="clearPins">Notīrīt piesprausto</button></p>
+        <div class="view-tools">
+          <label for="sort" data-i18n="sortBy">Kārtot pēc:</label>
+          <select id="sort"><option value="newest">Jaunākie vispirms</option><option value="oldest">Vecākie vispirms</option><option value="title">Nosaukums A–Z</option><option value="author">Autors A–Z</option></select>
+          <div class="segmented" aria-label="Skata veids"><button id="gridView" aria-label="Režģa skats">▦</button><button id="listView" aria-label="Saraksta skats">☷</button></div>
+        </div>
+      </div>
+
+      <div id="status" class="status" role="status" aria-live="polite"></div>
+      <div id="results"></div>
+      <nav id="pagination" class="pagination" aria-label="Lapas"></nav>
+    </section>
+
+    <section id="about" class="about-section" aria-labelledby="aboutTitle">
+      <h2 id="aboutTitle" data-i18n="about">Par bibliotēku</h2>
+      <p data-i18n="aboutText">Valodu Mājas katalogā apkopotas grāmatas par valodu apguvi, mācīšanu un daudzvalodību. Izmantojiet meklētāju un filtrus, lai atrastu piemērotāko izdevumu.</p>
+    </section>
+  </main>
+
+  <template id="cardTemplate"><article class="book-card"><button class="pin" aria-label="Piespraust grāmatu">♧</button><img class="cover" alt="" loading="lazy"><div class="card-copy"><h2></h2><p class="author"></p><span class="level tag"></span><dl></dl><p class="availability"></p></div></article></template>
+  <script src="config.js"></script>
+  <script src="sample-data.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
