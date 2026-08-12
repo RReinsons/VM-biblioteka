@@ -8,6 +8,18 @@
     en:{books:"Books",about:"About the library",search:"Search",searchPlaceholder:"Search by title, author, topic or keyword…",pinNote:"Pinned books are shown first.",clearPins:"Remove pinned books",sortBy:"Sort by:",perPage:"Books per page:",aboutText:"",author:"Author",year:"Year",language:"Language",topic:"Topic",comments:"Notes",noResults:"No books match the selected filters.",notFound:"No book was found for this link.",loading:"Loading catalogue…",results:n=>`${n} books`,prev:"Previous",next:"Next",all:"All",selected:n=>`${n} selected`,filterTopic:"Topic",filterLanguage:"Language",yearFrom:"From",yearTo:"To",sortNewest:"Newest first",sortOldest:"Oldest first",sortTitle:"Title A–Z",sortAuthor:"Author A–Z",pin:"Pin",unpin:"Unpin",resetFilters:"Reset all filters",removeFilter:"Remove filter",back:"Back to all books",showFilters:"Show filters",hideFilters:"Hide filters",bookDetails:"Book details"}
   };
   const t=k=>tr[state.lang][k];
+  const topicLabels={
+    "Språklæring":{lv:"Valodu mācīšanās",en:"Language Studying"},
+    "Undervisning":{lv:"Valodu mācīšanas",en:"Language Teaching"},
+    "Språktesting":{lv:"Valodu līmeņa pārbaudīšanas",en:"Language Testing"},
+    "Kombinert":{lv:"Kombinēts",en:"Multiple"},
+    "Annet":{lv:"Cits",en:"Other"}
+  };
+  const filterLabel=(key,value)=>{
+    if(key==="topic"&&topicLabels[value])return topicLabels[value][state.lang];
+    if(key==="language"&&String(value).trim().toLowerCase()==="other"&&state.lang==="lv")return "Cita valoda";
+    return String(value);
+  };
   const esc=s=>String(s??"").replace(/[&<>'"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;","'":"&#39;",'"':"&quot;"}[c]));
   const pinSvg=`<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8.2 3.5h7.6l-1 5.1 3.2 3.2v1.7H6v-1.7l3.2-3.2-1-5.1Z"/><path d="M12 13.5V21"/></svg>`;
   const placeholder=title=>`data:image/svg+xml,${encodeURIComponent(`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 340"><rect width="240" height="340" fill="#f3ede8"/><path d="M22 25h196v290H22z" fill="none" stroke="#fa4b16" stroke-width="4"/><text x="120" y="145" text-anchor="middle" font-family="sans-serif" font-size="17" fill="#444">VALODU MĀJA</text><text x="120" y="180" text-anchor="middle" font-family="sans-serif" font-size="12" fill="#777">${esc(title).slice(0,24)}</text></svg>`)}`;
@@ -22,7 +34,7 @@
     buildFilters();applyLanguage();handleHash();
   }
   function sortedValues(key){const last=key==="language"?"other":"annet";return [...new Set(state.books.map(b=>b[key]).filter(Boolean))].sort((a,b)=>{const al=String(a).toLowerCase()===last,bl=String(b).toLowerCase()===last;if(al!==bl)return al?1:-1;return String(a).localeCompare(String(b),"lv",{numeric:true})});}
-  function multiFilter(key,label){const values=sortedValues(key),selected=state.selected[key];return `<details class="multi-filter filter" data-key="${key}"><summary><span><small>${esc(label)}</small><strong>${selected.size?t("selected")(selected.size):t("all")}</strong></span><span aria-hidden="true">⌄</span></summary><div class="filter-menu">${values.map(v=>`<label><input type="checkbox" value="${esc(v)}" ${selected.has(String(v))?"checked":""}> <span>${esc(v)}</span></label>`).join("")}</div></details>`;}
+  function multiFilter(key,label){const values=sortedValues(key),selected=state.selected[key];return `<details class="multi-filter filter" data-key="${key}"><summary><span><small>${esc(label)}</small><strong>${selected.size?t("selected")(selected.size):t("all")}</strong></span><span aria-hidden="true">⌄</span></summary><div class="filter-menu">${values.map(v=>`<label><input type="checkbox" value="${esc(v)}" ${selected.has(String(v))?"checked":""}> <span>${esc(filterLabel(key,v))}</span></label>`).join("")}</div></details>`;}
   function buildFilters(){
     const years=[...new Set(state.books.map(b=>Number(b.year)).filter(Number.isFinite))].sort((a,b)=>a-b);
     const minYear=years[0]||1000,maxYear=years[years.length-1]||new Date().getFullYear();
@@ -41,7 +53,7 @@
     const sort=$("#sort").value;state.filtered.sort((a,b)=>{const pinned=Number(state.pins.has(b.id))-Number(state.pins.has(a.id));if(pinned)return pinned;if(sort==="newest")return(+b.year||0)-(+a.year||0);if(sort==="oldest")return(+a.year||0)-(+b.year||0);return String(a[sort]||a.title).localeCompare(String(b[sort]||b.title),"lv")});renderFilters();render();
   }
   function renderFilters(){
-    const tags=[];["topic","language"].forEach(key=>state.selected[key].forEach(v=>tags.push(`<button class="filter-chip" data-key="${key}" data-value="${esc(v)}" aria-label="${t("removeFilter")}: ${esc(v)}">${esc(v)} ×</button>`)));if(state.yearFrom)tags.push(`<button class="filter-chip" data-key="yearFrom">${t("yearFrom")}: ${state.yearFrom} ×</button>`);if(state.yearTo)tags.push(`<button class="filter-chip" data-key="yearTo">${t("yearTo")}: ${state.yearTo} ×</button>`);
+    const tags=[];["topic","language"].forEach(key=>state.selected[key].forEach(v=>{const label=filterLabel(key,v);tags.push(`<button class="filter-chip" data-key="${key}" data-value="${esc(v)}" aria-label="${t("removeFilter")}: ${esc(label)}">${esc(label)} ×</button>`)}));if(state.yearFrom)tags.push(`<button class="filter-chip" data-key="yearFrom">${t("yearFrom")}: ${state.yearFrom} ×</button>`);if(state.yearTo)tags.push(`<button class="filter-chip" data-key="yearTo">${t("yearTo")}: ${state.yearTo} ×</button>`);
     $("#activeFilters").innerHTML=tags.join("");$("#resetFilters").hidden=!tags.length&&!$("#query").value;$("#clearPins").hidden=!state.pins.size;
     document.querySelectorAll(".filter-chip").forEach(btn=>btn.onclick=()=>{const key=btn.dataset.key;if(key==="yearFrom"||key==="yearTo")state[key]="";else state.selected[key].delete(btn.dataset.value);state.page=1;buildFilters();apply()});
   }
