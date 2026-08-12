@@ -25,10 +25,13 @@
   function multiFilter(key,label){const values=sortedValues(key),selected=state.selected[key];return `<details class="multi-filter filter" data-key="${key}"><summary><span><small>${esc(label)}</small><strong>${selected.size?t("selected")(selected.size):t("all")}</strong></span><span aria-hidden="true">⌄</span></summary><div class="filter-menu">${values.map(v=>`<label><input type="checkbox" value="${esc(v)}" ${selected.has(String(v))?"checked":""}> <span>${esc(v)}</span></label>`).join("")}</div></details>`;}
   function buildFilters(){
     const years=[...new Set(state.books.map(b=>Number(b.year)).filter(Number.isFinite))].sort((a,b)=>a-b);
-    $("#filters").innerHTML=multiFilter("topic",t("filterTopic"))+multiFilter("language",t("filterLanguage"))+`<div class="year-range filter"><label>${t("year")}</label><div><select id="yearFrom"><option value="">${t("yearFrom")}</option>${years.map(y=>`<option ${String(y)===String(state.yearFrom)?"selected":""}>${y}</option>`).join("")}</select><span>—</span><select id="yearTo"><option value="">${t("yearTo")}</option>${years.map(y=>`<option ${String(y)===String(state.yearTo)?"selected":""}>${y}</option>`).join("")}</select></div></div>`;
+    const minYear=years[0]||1000,maxYear=years[years.length-1]||new Date().getFullYear();
+    $("#filters").innerHTML=multiFilter("topic",t("filterTopic"))+multiFilter("language",t("filterLanguage"))+`<div class="year-range filter"><label>${t("year")}</label><div><input id="yearFrom" type="number" inputmode="numeric" min="${minYear}" max="${maxYear}" step="1" value="${esc(state.yearFrom)}" placeholder="${t("yearFrom")}" aria-label="${t("yearFrom")}"><span>—</span><input id="yearTo" type="number" inputmode="numeric" min="${minYear}" max="${maxYear}" step="1" value="${esc(state.yearTo)}" placeholder="${t("yearTo")}" aria-label="${t("yearTo")}"></div></div>`;
     document.querySelectorAll(".multi-filter input").forEach(input=>input.onchange=()=>{const details=input.closest("details"),key=details.dataset.key;input.checked?state.selected[key].add(input.value):state.selected[key].delete(input.value);details.querySelector("summary strong").textContent=state.selected[key].size?t("selected")(state.selected[key].size):t("all");state.page=1;apply();});
-    $("#yearFrom").onchange=e=>{state.yearFrom=e.target.value;if(state.yearTo&&+state.yearTo<+state.yearFrom)state.yearTo=state.yearFrom;state.page=1;buildFilters();apply()};
-    $("#yearTo").onchange=e=>{state.yearTo=e.target.value;if(state.yearFrom&&+state.yearFrom>+state.yearTo)state.yearFrom=state.yearTo;state.page=1;buildFilters();apply()};
+    const updateYears=()=>{state.yearFrom=$("#yearFrom").value;state.yearTo=$("#yearTo").value;state.page=1;apply()};
+    $("#yearFrom").oninput=updateYears;$("#yearTo").oninput=updateYears;
+    $("#yearFrom").onblur=()=>{if(state.yearFrom&&state.yearTo&&+state.yearFrom>+state.yearTo){state.yearTo=state.yearFrom;buildFilters();apply()}};
+    $("#yearTo").onblur=()=>{if(state.yearFrom&&state.yearTo&&+state.yearTo<+state.yearFrom){state.yearFrom=state.yearTo;buildFilters();apply()}};
   }
   function apply(){
     state.routeBook=null;const q=$("#query").value.trim().toLocaleLowerCase("lv");
