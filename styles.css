@@ -44,3 +44,6 @@ html[data-theme=dark]{--bg:#080a0c;--surface:#101316;--surface2:#15181b;--text:#
 
 /* Heading-free compact year range. */
 .filters .year-slider{height:64px;min-height:64px;max-height:64px;grid-template-rows:31px 17px;padding:5px 14px}.filters .year-slider .year-values{align-items:start}.filters .year-slider .year-values span{line-height:1}.filters .year-slider .year-values input{line-height:1.05}
+
+/* Centered year caption while retaining the compact control. */
+.filters .year-slider{height:70px;min-height:70px;max-height:70px;grid-template-rows:10px 29px 17px;padding:4px 14px}.filters .year-slider .year-slider-title{text-align:center;font-size:.68rem;line-height:1;color:var(--muted);letter-spacing:.06em}
