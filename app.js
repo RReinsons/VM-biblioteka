@@ -26,12 +26,14 @@
   function buildFilters(){
     const years=[...new Set(state.books.map(b=>Number(b.year)).filter(Number.isFinite))].sort((a,b)=>a-b);
     const minYear=years[0]||1000,maxYear=years[years.length-1]||new Date().getFullYear();
-    $("#filters").innerHTML=multiFilter("topic",t("filterTopic"))+multiFilter("language",t("filterLanguage"))+`<div class="year-range filter"><div class="year-field"><label for="yearFrom">${t("yearFrom")}</label><input id="yearFrom" type="number" inputmode="numeric" min="${minYear}" max="${maxYear}" step="1" value="${esc(state.yearFrom)}" placeholder="${t("yearFrom")}"></div><div class="year-field"><label for="yearTo">${t("yearTo")}</label><input id="yearTo" type="number" inputmode="numeric" min="${minYear}" max="${maxYear}" step="1" value="${esc(state.yearTo)}" placeholder="${t("yearTo")}"></div></div>`;
+    const fromValue=state.yearFrom||minYear,toValue=state.yearTo||maxYear;
+    $("#filters").innerHTML=multiFilter("topic",t("filterTopic"))+multiFilter("language",t("filterLanguage"))+`<div class="year-slider filter"><div class="year-slider-title">${t("year")}</div><div class="year-values"><label><span>${t("yearFrom")}</span><input id="yearFrom" type="number" inputmode="numeric" min="${minYear}" max="${maxYear}" value="${fromValue}" aria-label="${t("yearFrom")}"></label><label><span>${t("yearTo")}</span><input id="yearTo" type="number" inputmode="numeric" min="${minYear}" max="${maxYear}" value="${toValue}" aria-label="${t("yearTo")}"></label></div><div class="dual-range"><div class="range-track"></div><div id="rangeFill" class="range-fill"></div><input id="yearFromRange" type="range" min="${minYear}" max="${maxYear}" value="${fromValue}" aria-label="${t("yearFrom")}"><input id="yearToRange" type="range" min="${minYear}" max="${maxYear}" value="${toValue}" aria-label="${t("yearTo")}"></div></div>`;
     document.querySelectorAll(".multi-filter input").forEach(input=>input.onchange=()=>{const details=input.closest("details"),key=details.dataset.key;input.checked?state.selected[key].add(input.value):state.selected[key].delete(input.value);details.querySelector("summary strong").textContent=state.selected[key].size?t("selected")(state.selected[key].size):t("all");state.page=1;apply();});
-    const updateYears=()=>{state.yearFrom=$("#yearFrom").value;state.yearTo=$("#yearTo").value;state.page=1;apply()};
-    $("#yearFrom").oninput=updateYears;$("#yearTo").oninput=updateYears;
-    $("#yearFrom").onblur=()=>{if(state.yearFrom&&state.yearTo&&+state.yearFrom>+state.yearTo){state.yearTo=state.yearFrom;buildFilters();apply()}};
-    $("#yearTo").onblur=()=>{if(state.yearFrom&&state.yearTo&&+state.yearTo<+state.yearFrom){state.yearFrom=state.yearTo;buildFilters();apply()}};
+    const paintRange=()=>{const from=+$("#yearFromRange").value,to=+$("#yearToRange").value,span=maxYear-minYear||1;$("#rangeFill").style.left=`${(from-minYear)/span*100}%`;$("#rangeFill").style.right=`${100-(to-minYear)/span*100}%`};
+    const commitYears=(from,to)=>{from=Math.max(minYear,Math.min(+from||minYear,maxYear));to=Math.max(minYear,Math.min(+to||maxYear,maxYear));if(from>to)[from,to]=[to,from];state.yearFrom=String(from);state.yearTo=String(to);$("#yearFrom").value=from;$("#yearTo").value=to;$("#yearFromRange").value=from;$("#yearToRange").value=to;paintRange();state.page=1;apply()};
+    $("#yearFromRange").oninput=e=>commitYears(Math.min(+e.target.value,+$("#yearToRange").value),$("#yearToRange").value);
+    $("#yearToRange").oninput=e=>commitYears($("#yearFromRange").value,Math.max(+e.target.value,+$("#yearFromRange").value));
+    $("#yearFrom").onchange=()=>commitYears($("#yearFrom").value,$("#yearTo").value);$("#yearTo").onchange=()=>commitYears($("#yearFrom").value,$("#yearTo").value);paintRange();
   }
   function apply(){
     state.routeBook=null;const q=$("#query").value.trim().toLocaleLowerCase("lv");
