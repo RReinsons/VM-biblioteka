@@ -5,8 +5,8 @@
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <meta name="description" content="Valodu Mājas valodu apguves un mācīšanas grāmatu katalogs">
   <title>Valodu Mājas bibliotēka</title>
-  <link rel="icon" href="assets/logo.png">
-  <link rel="stylesheet" href="styles.css?v=20260811-4">
+  <link rel="icon" type="image/png" href="assets/favicon.png?v=20260812-1">
+  <link rel="stylesheet" href="styles.css?v=20260812-1">
 </head>
 <body>
   <a class="skip-link" href="#catalog">Pāriet uz katalogu</a>
@@ -31,6 +31,10 @@
       </form>
 
       <div id="filters" class="filters" aria-label="Kataloga filtri"></div>
+      <div class="filter-summary">
+        <div id="activeFilters" class="active-filters" aria-live="polite"></div>
+        <button id="resetFilters" class="secondary-button" type="button" data-i18n="resetFilters">Atiestatīt visus filtrus</button>
+      </div>
 
       <div class="catalog-toolbar">
         <p class="pin-note"><span class="pin-note-icon" aria-hidden="true"></span> <span data-i18n="pinNote">Piespraustās grāmatas tiek rādītas vispirms.</span> <button id="clearPins" class="link-button" data-i18n="clearPins">Notīrīt piesprausto</button></p>
@@ -54,9 +58,8 @@
     </section>
   </main>
 
-  <template id="cardTemplate"><article class="book-card"><button class="pin" aria-label="Piespraust grāmatu">♧</button><img class="cover" alt="" loading="lazy"><div class="card-copy"><h2></h2><p class="author"></p><span class="level tag"></span><dl></dl><p class="availability"></p></div></article></template>
-  <script src="config.js?v=20260811-4"></script>
-  <script src="sample-data.js?v=20260811-4"></script>
-  <script src="app.js?v=20260811-4"></script>
+  <script src="config.js?v=20260812-1"></script>
+  <script src="sample-data.js?v=20260812-1"></script>
+  <script src="app.js?v=20260812-1"></script>
 </body>
 </html>
