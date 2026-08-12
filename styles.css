@@ -41,3 +41,6 @@ html[data-theme=dark]{--bg:#080a0c;--surface:#101316;--surface2:#15181b;--text:#
 
 /* Prevent the CSS grid from stretching the year panel taller than other filters. */
 .filters{align-items:start}.filters .year-slider{align-self:start;box-sizing:border-box;height:78px;min-height:78px;max-height:78px;display:grid;grid-template-rows:11px 24px 17px;align-content:center;padding:6px 14px;overflow:visible}.filters .year-slider .year-slider-title{margin:0}.filters .year-slider .year-values{align-items:center;margin:0}.filters .year-slider .dual-range{height:17px}.filters .year-slider .range-track,.filters .year-slider .range-fill{top:7px}
+
+/* Heading-free compact year range. */
+.filters .year-slider{height:64px;min-height:64px;max-height:64px;grid-template-rows:31px 17px;padding:5px 14px}.filters .year-slider .year-values{align-items:start}.filters .year-slider .year-values span{line-height:1}.filters .year-slider .year-values input{line-height:1.05}
